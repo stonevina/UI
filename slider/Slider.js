@@ -1,4 +1,4 @@
-define(['./Base', './Util'], function(Class, Util) {
+define(['../common/Base', '../common/Util'], function(Class, Util) {
 	var Slider = new Class;
 
 	Slider.include({
@@ -12,10 +12,15 @@ define(['./Base', './Util'], function(Class, Util) {
 		},
 		init : function(container, opts) {
 			var defaults = {
+				//默认滚动的个数
 				step : 3,
+				//动画间隔时间
 				duration : 500,
+				//响应式
 				isResize : true,
+				//图片采用懒加载方式
 				isLazyLoad : true,
+				//滚动停止后的回调
 				callback : function() {}
 			},
 			defaults = $.extend(defaults, this.getType()),
@@ -23,23 +28,24 @@ define(['./Base', './Util'], function(Class, Util) {
 
 			var outCon = $(container), 
 				liNum = outCon.find('li').size(),
-				liWdt = settings.width || outCon.find('li:first').get(0).offsetWidth,
-				liHgt = settings.height || outCon.find('li:first').get(0).offsetHeight,
+				ele = outCon.find('li:first'),
+				liWdt = settings.width || ele.width(),
+				liHgt = settings.height || ele.height(),
 				prevEle = outCon.find('.prev'),
 				nextEle = outCon.find('.next'),
-				oWdt = $('#content')[0].offsetWidth - 70 - 300,
+				oWdt = $('body').width() - 800,
 				fix = settings.fix || 0;
 
 			settings.isResize && (liWdt = oWdt / settings.step);
 			settings.isResize && (Util.hashTable[container] = this);
-			outCon.find('li').css({width : liWdt - 10 - fix});
+			outCon.find('li').css({width : liWdt - fix});
 			oWdt = settings.isResize ? oWdt : settings.step * liWdt;
 
 			outCon.find('ul').css({
 				position : 'absolute',
 				top : 0,
 				left : 0,
-				width : Util.isIE6 ? (liWdt + 2) * liNum : liWdt * liNum
+				width : ele.outerWidth() * liNum
 			});
 
 			outCon.css({width : oWdt});
@@ -58,6 +64,7 @@ define(['./Base', './Util'], function(Class, Util) {
 			this.settings = settings;
 			this.callback = settings.callback;
 			this.isLazyLoad = settings.isLazyLoad;
+			this.isIE6Contrl = settings.isIE6Contrl;
 
 			this.prevEle.unbind('click').click(this.proxy(this.prev)).hide();
 			this.nextEle.unbind('click').click(this.proxy(this.next));
@@ -112,9 +119,9 @@ define(['./Base', './Util'], function(Class, Util) {
 			return Math.abs(left) / liWdt + this.step !== num;		
 		},
 		//返回对应的版本
-		getType : function() {
+		getType : function(x) {
 			var width = document.documentElement.clientWidth;
-			if(width > 1000 && !Util.isIE6) {
+			if(width > 1000) {
 				return this.typeList.t2;
 			} else {
 				return this.typeList.t1;
