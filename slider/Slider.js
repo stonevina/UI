@@ -1,29 +1,26 @@
+/**
+ * @description: 焦点图
+ * @version: 1.0
+ * @author: wolf
+ * @time: 2014-04-28 10:17:13
+ */
 define(['../common/Base', '../common/Util'], function(Class, Util) {
 	var Slider = new Class;
 
 	Slider.include({
-		typeList : {
-			t1 : {
-				step : 4
-			},
-			t2 : {
-				step : 5
-			}
-		},
 		init : function(container, opts) {
 			var defaults = {
 				//默认滚动的个数
-				step : 3,
+				step: 3,
 				//动画间隔时间
-				duration : 500,
+				duration: 500,
 				//响应式
-				isResize : true,
+				isResize: true,
 				//图片采用懒加载方式
-				isLazyLoad : true,
+				isLazyLoad: true,
 				//滚动停止后的回调
-				callback : function() {}
+				callback: function() {}
 			},
-			defaults = $.extend(defaults, this.getType()),
 			settings = $.extend({}, defaults, opts);
 
 			var outCon = $(container), 
@@ -35,22 +32,21 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				nextEle = outCon.find('.next'),
 				oWdt = $('body').width() - 800,
 				fix = settings.fix || 0;
-
 			settings.isResize && (liWdt = oWdt / settings.step);
 			settings.isResize && (Util.hashTable[container] = this);
 			outCon.find('li').css({width : liWdt - fix});
 			oWdt = settings.isResize ? oWdt : settings.step * liWdt;
 
 			outCon.find('ul').css({
-				position : 'absolute',
-				top : 0,
-				left : 0,
-				width : ele.outerWidth() * liNum
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				width: ele.outerWidth() * liNum
 			});
 
-			outCon.css({width : oWdt});
-			$('.ctrl', outCon).css({height : liHgt});
-			$('.slider-show, .slider-show-ctn', outCon).css({height : liHgt});
+			outCon.css({width: oWdt});
+			$('.ctrl', outCon).css({height: liHgt});
+			$('.slider-show, .slider-show-ctn', outCon).css({height: liHgt});
 
 			this.prevEle = prevEle;
 			this.nextEle = nextEle;
@@ -118,20 +114,11 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 		isEnd : function(left, liWdt, num) {
 			return Math.abs(left) / liWdt + this.step !== num;		
 		},
-		//返回对应的版本
-		getType : function(x) {
-			var width = document.documentElement.clientWidth;
-			if(width > 1000) {
-				return this.typeList.t2;
-			} else {
-				return this.typeList.t1;
-			}
-		},
 		resize : function() {
 			window.onresize = Util.throttle(function() {
 				for(var key in Util.hashTable) {
 					var self = Util.hashTable[key];
-					var opts = $.extend({}, self.settings, self.getType());
+					var opts = $.extend({}, self.settings);
 					self.init(self.outCon, opts);
 				}
 			}, 1);
