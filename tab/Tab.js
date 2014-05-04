@@ -1,6 +1,6 @@
 /**
  * @description: tab标签切换
- * @version: 1.0
+ * @version: 1.0.0
  * @author: wolf
  * @time: 2014-04-30 10:16:59
  */
