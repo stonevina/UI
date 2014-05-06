@@ -1,56 +1,29 @@
 /*css reset*/
 html,body,div,span,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,address,big,cite,code,del,em,font,img,ins,small,strong,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend{margin:0;padding:0}ol,ul{list-style:none}:focus{outline:0}
 
-#slider {
-	border-color: #eee;
-    border-style: solid;
-    border-width: 0 1px 1px;
-    padding: 0 30px;
-    position: relative;
-}
-#slider .ctrl{
-	cursor: pointer;
-    position: absolute;
-    transition: all 0.2s ease-in 0s;
-    z-index: 1;
-    top: 0;
-    width: 30px;
-}
-#slider .ctrl b{
-	background-image: url("http://misc.360buyimg.com/product/skin/2013/i/20130330B_1.png");
-	background-repeat: no-repeat;
-	display: block;
-	height: 33px;
-	margin: 66px auto 0;
-	width: 25px;
-}
-#slider .prev{left: 0;}
-#slider .prev b{
-	background-position: -85px -45px;
-}
-#slider .next{right: 0;}
-#slider .next b{
-	background-position: -55px -45px;
-}
-#slider .slider-show{
-    overflow: hidden;
-    position: relative;
-}
-#slider .slider-show .slider-show-ctn{
-	position: relative;
-}
-#slider .slider-show .slider-show-ctn ul{
-	height: 149px;
-	overflow: hidden;
-	list-style: none outside none;
-}
-#slider .slider-show .slider-show-ctn ul li{
-	float: left;
-	border-right: 1px solid #eee;
-}
-#slider .prev:hover b, #slider .prev b.hover{
-    background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
-}
-#slider .next:hover b, #slider .next b.hover{
-    background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 -37px rgba(0, 0, 0, 0);
-}
+#slider01, #slider02{border-color: #eee;border-style: solid;border-width: 0 1px 1px;padding: 0 30px;position: relative;}
+#slider01 .ctrl{cursor: pointer;position: absolute;transition: all 0.2s ease-in 0s;z-index: 1;top: 0;width: 30px;}
+#slider01 .ctrl b{background-image: url("http://misc.360buyimg.com/product/skin/2013/i/20130330B_1.png");background-repeat: no-repeat;display: block;height: 33px;margin: 66px auto 0;width: 25px;}
+#slider01 .prev{left: 0;}
+#slider01 .prev b{background-position: -85px -45px;}
+#slider01 .next{right: 0;}
+#slider01 .next b{background-position: -55px -45px;}
+#slider01 .slider-show{height:149px;overflow: hidden;position: relative;}
+#slider01 .slider-show{height:149px;position: relative;}
+#slider01 .slider-show ul{list-style: none;}
+#slider01 .slider-show ul li{width: 200px;height: 149px;float: left;border-right: 1px solid #eee;}
+#slider01 .prev:hover b, #slider01 .prev b.hover{background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);}
+#slider01 .next:hover b, #slider01 .next b.hover{background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 -37px rgba(0, 0, 0, 0);}
+
+#slider02 .ctrl{cursor: pointer;position: absolute;transition: all 0.2s ease-in 0s;z-index: 1;top: 0;width: 30px;}
+#slider02 .ctrl b{background-image: url("http://misc.360buyimg.com/product/skin/2013/i/20130330B_1.png");background-repeat: no-repeat;display: block;height: 33px;margin: 66px auto 0;width: 25px;}
+#slider02 .prev{left: 0;}
+#slider02 .prev b{background-position: -85px -45px;}
+#slider02 .next{right: 0;}
+#slider02 .next b{background-position: -55px -45px;}
+#slider02 .slider-show{height:149px;overflow: hidden;position: relative;}
+#slider02 .slider-show{height:149px;position: relative;}
+#slider02 .slider-show ul{list-style: none;}
+#slider02 .slider-show ul li{width: 200px;height: 149px;float: left;border-right: 1px solid #eee;}
+#slider02 .prev:hover b, #slider02 .prev b.hover{background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);}
+#slider02 .next:hover b, #slider02 .next b.hover{background: url("http://misc.360buyimg.com/product/skin/2013/i/15.png") no-repeat scroll 0 -37px rgba(0, 0, 0, 0);}
