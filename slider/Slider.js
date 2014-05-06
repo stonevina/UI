@@ -102,6 +102,8 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 			this.targetItemWrap.css({width: itemParentWdt, height: itemParentHgt, position: 'absolute', top: 0, left: 0, overflow: 'hidden'});
 			$(this.slideCtnWrapSelector, this.slideWrapSelector).css(cssStyle);
 			$(this.slideWrapSelector).css(cssStyle);
+
+			this.visible < itemNum && this.nextEle.show();
 		},
 		//计算偏移量以及判断首尾
 		getDistanceAndLoc: function (direct) {
