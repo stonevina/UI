@@ -28,8 +28,8 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				delay: 1000,
 				//单次滚动的数量是否相同
 				isSameStep: false,
-				//是否无限滚动
-				isUnlimited: false,
+				//是否循环滚动
+				isLoop: false,
 				//是否存在margin
 				isHasMargin: false,
 				//slider单个元素父级tag
@@ -52,27 +52,7 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				callback: function () {}
 			},
 			settings = $.extend({}, defaults, opts);
-
-			this.eventType = settings.eventType;
-			this.speed = settings.speed;
-			this.isResize = settings.isResize;
-			this.isLazyLoad = settings.isLazyLoad;
-			this.visible = settings.visible;
-			this.step = settings.step;
-			this.isAutoPlay = settings.isAutoPlay;
-			this.delay = settings.delay;
-			this.isSameStep = settings.isSameStep;
-			this.isUnlimited = settings.isUnlimited;
-			this.isHasMargin = settings.isHasMargin;
-			this.slideWrapSelector = settings.slideWrapSelector;
-			this.slideCtnWrapSelector = settings.slideCtnWrapSelector;
-			this.sliderPreSelector = settings.sliderPreSelector;
-			this.sliderNextSelector = settings.sliderNextSelector;
-			this.sliderItemWidth = settings.sliderItemWidth;
-			this.sliderItemHeight = settings.sliderItemHeight;
-			this.sliderItemTag = settings.sliderItemTag;
-			this.sliderItemParentTag = settings.sliderItemParentTag;
-			this.callback = settings.callback;
+			$.extend(this, settings);
 
 			this.animate = false;
 			this.targetItemWrap = $(this.sliderItemParentTag, this.slideWrapSelector);
