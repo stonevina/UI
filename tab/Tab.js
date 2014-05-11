@@ -8,7 +8,7 @@ define(['../common/Base'], function (Class) {
 	var Tab = new Class;
 
 	Tab.include({
-		init : function (opts) {
+		init: function (opts) {
 			var defaults = {
 				//事件类型
 				eventType: 'click',
@@ -40,7 +40,7 @@ define(['../common/Base'], function (Class) {
 
 			this.bindEvent();
 		},
-		bindEvent : function () {
+		bindEvent: function () {
 			var self = this,
 				ele = $('.' + self.navWrapClass), 
 				panel = $('.' + self.panelWrapClass);
