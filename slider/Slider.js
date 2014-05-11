@@ -54,14 +54,16 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 			settings = $.extend({}, defaults, opts);
 			$.extend(this, settings);
 
-			this.animate = false;
 			this.targetItemWrap = $(this.sliderItemParentTag, this.slideWrapSelector);
 			this.targetItem = $(this.sliderItemTag, this.slideWrapSelector);
+			this.slideWrapSelector = $(this.slideWrapSelector);
 			this.prevEle = $(this.sliderPreSelector, this.slideWrapSelector);
 			this.nextEle = $(this.sliderNextSelector, this.slideWrapSelector);
 
 			this.initStyle();
 			this.bindEvent();
+
+			this.isAutoPlay && this.autoPlay();
 		},
 		bindEvent: function () {
 			this.prevEle.click(this.proxy(this.prev));
@@ -73,17 +75,39 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				height = this.height || this.targetItem.height(),
 				itemParentWdt = itemNum * width,
 				itemParentHgt = height,
-				cssStyle = {width: width * this.visible, height: itemParentHgt};
+				nLeft = 0,
+				cssStyle = {width: width * this.visible, height: itemParentHgt, position: 'relative', overflow: 'hidden'};
 
 			this.width = width;
 			this.height = height;
 			this.itemNum = itemNum;
+			
+			if (this.isLoop) {
+				//copy首尾的元素
+				var stepFirstItems = this.slideWrapSelector.find(this.sliderItemTag + ':lt(' + this.visible + ')').clone(true).addClass('slider-clone'),
+				stepLastItems = this.slideWrapSelector.find(this.sliderItemTag + ':gt(' + (this.itemNum - this.visible - 1) + ')').clone(true).addClass('slider-clone');
 
-			this.targetItemWrap.css({width: itemParentWdt, height: itemParentHgt, position: 'absolute', top: 0, left: 0, overflow: 'hidden'});
-			$(this.slideCtnWrapSelector, this.slideWrapSelector).css(cssStyle);
-			$(this.slideWrapSelector).css(cssStyle);
+				stepFirstItems.insertAfter(this.slideWrapSelector.find(this.sliderItemTag + ':last'));
+				stepLastItems.insertBefore(this.slideWrapSelector.find(this.sliderItemTag + ':first'));
 
+				//容器的宽度
+				itemParentWdt = (itemNum + this.visible * 2) * width;
+				//左边的偏移量
+				nLeft = -1 * this.width * this.visible;
+
+				//更新选择器
+				this.targetItem = $(this.sliderItemTag, this.slideWrapSelector);
+			}
+
+			this.targetItem.css({float: 'left'});
+			this.prevEle.css({height: itemParentHgt, left: 0, position: 'absolute'});
+			this.nextEle.css({height: itemParentHgt, right: 0, position: 'absolute'});
+			this.slideWrapSelector.find(this.slideCtnWrapSelector).andSelf().css(cssStyle);
+			this.targetItemWrap.css({width: itemParentWdt, height: itemParentHgt, position: 'absolute', top: 0, left: nLeft, overflow: 'hidden'});
+
+			//根据数量判断是否隐藏按钮
 			this.visible < itemNum && this.nextEle.show();
+			this.isLoop && this.prevEle.show();
 		},
 		//计算偏移量以及判断首尾
 		getDistanceAndLoc: function (direct) {
@@ -92,13 +116,15 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				maxLeft = 0,
 				preLeft = direct * this.step * this.width + cutLeft;
 
-			if(direct == 1) {//判断向左方向
-				return preLeft >= 0 ? {distance: maxLeft, isStart: true} : {distance: preLeft, isStart: false};
+			//重置最小偏移量和最大偏移量
+			this.isLoop && (minLeft = -1 * this.width * (this.itemNum + this.visible), maxLeft = -1 * this.step * this.width)
+
+			if (direct == 1) {//判断向左方向
+				return preLeft > maxLeft || (preLeft == maxLeft && !this.isLoop) ? {distance: 0, isStart: true} : {distance: preLeft, isStart: false};
 			} else {//判断向右方向
 				return preLeft <= minLeft ? {distance: minLeft, isEnd: true} : {distance: preLeft, isEnd: false};
 			}
 		},
-		//有限slider
 		run: function (direct) {
 			var self = this,
 				loc = this.getDistanceAndLoc(direct);
@@ -110,12 +136,21 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				self.prevEle.show();
 
 				//重置slider状态
-				loc.isEnd && self.nextEle.hide(); 
-				loc.isStart && self.prevEle.hide();
+				if (self.isLoop) { //循环滚动
+					loc.isEnd && $(this).css('left', -1 * self.width * self.visible); 
+					loc.isStart && $(this).css('left', -1 * self.width * self.itemNum);
+				} else { //非循环滚动，隐藏左右按钮
+					loc.isEnd && self.nextEle.hide(); 
+					loc.isStart && self.prevEle.hide();
+				}
 
 				self.isAnimate = false;
 				self.callback.call(this, this);
 			});
+		},
+		//自动播放
+		autoPlay: function () {
+			var timer = setInterval($.proxy(this.next, this), this.delay);
 		},
 		//direct = 1 为前
 		prev: function () {
