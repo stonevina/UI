@@ -36,19 +36,7 @@ define(['../common/Base'], function (Class) {
 				callback: function () {}
 			},
 			settings = $.extend({}, defaults, opts);
-
-			this.eventType = settings.eventType;
-			this.navClass = settings.navClass;
-			this.navSelectedClass = settings.navSelectedClass;
-			this.panelClass = settings.panelClass;
-			this.panelSelectedClass = settings.panelSelectedClass;
-			this.index = settings.index;
-			this.navTag = settings.navTag;
-			this.tabAttr = settings.tabAttr;
-			this.navWrapClass = settings.navWrapClass;
-			this.panelWrapClass = settings.panelWrapClass;
-			this.isMulti = settings.isMulti;
-			this.callback = settings.callback;
+			$.extend(this, settings);
 
 			this.bindEvent();
 		},
