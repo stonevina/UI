@@ -1,0 +1,20 @@
+body{margin:30px auto;width: 300px;}
+
+.ui-scrollbox{width: 300px;height: 200px;position: relative;overflow: hidden;border: 1px solid #eee;}
+.ui-hscrollContent{overflow: hidden;white-space: nowrap;position: relative;}
+.ui-vscrollContent{overflow: hidden;position: relative;}
+
+.ui-hscrollbar-wrap, .ui-hscrollbar-head, .ui-hscrollbar-nail, .ui-hscrollbar-item{background: url(./hscrollbar.png);}
+.ui-vscrollbar-wrap, .ui-vscrollbar-head, .ui-vscrollbar-nail, .ui-vscrollbar-item{background: url(./vscrollbar.png);}
+.ui-hscrollbar-wrap, .ui-hscrollbar-head, .ui-hscrollbar-nail, .ui-hscrollbar-item,
+.ui-vscrollbar-wrap, .ui-vscrollbar-head, .ui-vscrollbar-nail, .ui-vscrollbar-item{position: absolute;width: 15px;height: 15px; background-position: 0 0;}
+
+.ui-hscrollbar-wrap{height: 15px;left: 0;bottom: 0;background-position: 0 100%;z-index: 10;}
+.ui-hscrollbar-head{background-position: 0 0;z-index: 11;}
+.ui-hscrollbar-nail{right: 0;background-position: -15px 0;z-index: 11;}
+.ui-hscrollbar-item{width: 13px;border: 1px solid #bcbcbc;background-position: 0 -45px;z-index: 11;}
+
+.ui-vscrollbar-wrap{width: 15px;right: 0;top: 0;background-position: 100% 0;z-index: 10;}
+.ui-vscrollbar-head{background-position: 0 0;z-index: 11;}
+.ui-vscrollbar-nail{bottom: 0;background-position: 0 -15px;z-index: 11;}
+.ui-vscrollbar-item{width: 13px;border: 1px solid #bcbcbc;background-position: -45px 0;z-index: 11;}

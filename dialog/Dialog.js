@@ -124,10 +124,10 @@ define(['../common/Base', '../common/Template', '../common/Util', '../fixer/Fix'
 					var height = this.height ? ' height=' + this.height : '';
 
 					//直接拼串貌似不用再绑定 load ....
-					this.img = '<img src=' + this.source + width + height + '/>';
+					this.img = $('<img src=' + this.source + width + height + '/>');
 					this.contentEle.append(this.img);
 
-					$(this.img).bind('load', this.proxy(function () {
+					this.img.bind('load', this.proxy(function () {
 						this.initSize();
 					}, this));
 					break;
