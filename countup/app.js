@@ -1,11 +1,11 @@
 require(['./CountUp'], function(CountUp) {
 	var countup = new CountUp({
 		target: $('#myTargetElement'),
-		startVal: 100,
-		endVal: 50,
+		startVal: 24.02,
+		endVal: 94.62,
 		decimals: 2,
-		duration: 20,
-		complete: function() {alert('ok')}
+		duration: 2.5,
+		complete: function() {console.info('ok')}
 	});
 
 	$('#start').click($.proxy(countup.start, countup));

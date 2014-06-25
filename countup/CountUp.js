@@ -4,7 +4,7 @@
  * @author: wolf
  * @time: 2014-06-24 17:58:17
  */
-define(['../common/Base'], function (Class) {
+define(['../common/Base', '../common/Util'], function (Class, Util) {
 	var CountUp = new Class;
 
 	CountUp.include({
@@ -42,32 +42,7 @@ define(['../common/Base'], function (Class) {
 			this.initAnimationFrame();
 		},
 		initAnimationFrame: function () {
-			//参考http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-			var lastTime = 0;
-			var vendors = ['webkit', 'moz', 'ms'];
-			
-			for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-				window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-				window.cancelAnimationFrame =
-				  window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-			}
-			
-			if (!window.requestAnimationFrame) {
-				window.requestAnimationFrame = function (callback, element) {
-					var currTime = new Date().getTime();
-					var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-					var id = window.setTimeout(function () { callback(currTime + timeToCall); },
-					  timeToCall);
-					lastTime = currTime + timeToCall;
-					return id;
-				}
-			}
-			
-			if (!window.cancelAnimationFrame) {
-				window.cancelAnimationFrame = function (id) {
-					clearTimeout(id);
-				}
-			}
+			Util.initAnimationFrame();
 		},
 		easeOutExpo: function (t, b, c, d) {
 			return c * (-Math.pow(2, -10 * t / d) + 1) * 1024 / 1023 + b;
@@ -102,9 +77,11 @@ define(['../common/Base'], function (Class) {
 				this.rAF = requestAnimationFrame($.proxy(this.count, this));
 			} else {
 				if (this.complete != null) this.complete();
+				this.reset();
 			}
 		},
 		start: function () {
+			this.reset();
 			if (!isNaN(this.endVal) && !isNaN(this.startVal)) {
 				this.rAF = requestAnimationFrame($.proxy(this.count, this));
 			} else {
