@@ -17,7 +17,7 @@ define(['../common/Base', '../common/Template', '../common/Util', '../common/Twe
 				//变化值
 				changeVal: 0,
 				//持续时间
-				during: 0,
+				duration: 0,
 				//开始时间
 				startTime: 0,
 				//步长
@@ -115,9 +115,9 @@ define(['../common/Base', '../common/Template', '../common/Util', '../common/Twe
 		},
 		//自由滚动
 		freeRun: function () {
-			this.goal.css('marginTop', Math.ceil(Tween.Quad.easeOut(this.startTime, this.startVal, -1 * this.itemTotalHeight, this.during)));
+			this.goal.css('marginTop', Math.ceil(Tween.Quad.easeOut(this.startTime, this.startVal, -1 * this.itemTotalHeight, this.duration)));
 
-			if (this.startTime < this.during) {
+			if (this.startTime < this.duration) {
 				this.startTime += this.step;
 				this.rAF = requestAnimationFrame($.proxy(this.freeRun, this));
 			} else {
@@ -127,9 +127,9 @@ define(['../common/Base', '../common/Template', '../common/Util', '../common/Twe
 		},
 		//目标定位滚动
 		goalRun: function () {
-			this.goal.css('marginTop', Math.ceil(Tween.Back.easeOut(this.startTime, this.startVal, -1 * this.changeVal, this.during)));
+			this.goal.css('marginTop', Math.ceil(Tween.Back.easeOut(this.startTime, this.startVal, -1 * this.changeVal, this.duration)));
 
-			if (this.startTime < this.during) {
+			if (this.startTime < this.duration) {
 				this.startTime += this.step;
 				this.rAF = requestAnimationFrame($.proxy(this.goalRun, this));
 			} else {
