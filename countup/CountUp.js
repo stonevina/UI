@@ -38,6 +38,7 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 			this.dec = Math.pow(10, this.decimals);
 			this.duration = opts.duration * 1000 || 2000;
 			this.originStartVal = this.startVal;
+			this.originDuration = this.duration;
 
 			this.initAnimationFrame();
 		},
@@ -98,11 +99,12 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 			this.startTime = null;
 			this.duration = this.remaining;
 			this.startVal = this.frameVal;
-			requestAnimationFrame($.proxy(this.count, this));
+			this.rAF = requestAnimationFrame($.proxy(this.count, this));
 		},
 		reset: function () {
 			this.startTime = null;
 			this.startVal = this.originStartVal;
+			this.duration = this.originDuration;
 			cancelAnimationFrame(this.rAF);
 			this.target.get(0).innerHTML = this.formatNumber(this.startVal.toFixed(this.decimals));
 		},
