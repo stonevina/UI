@@ -115,7 +115,7 @@ define(['../common/Base', '../common/Template', '../common/Util', '../common/Twe
 		},
 		//自由滚动
 		freeRun: function () {
-			this.goal.css('marginTop', Math.ceil(Tween.Quad.easeOut(this.startTime, this.startVal, -1 * this.itemTotalHeight, this.duration)));
+			this.goal.css('marginTop', Math.ceil(Tween.Sine.easeIn(this.startTime, this.startVal, -1 * this.itemTotalHeight, this.duration)));
 
 			if (this.startTime < this.duration) {
 				this.startTime += this.step;
@@ -127,7 +127,7 @@ define(['../common/Base', '../common/Template', '../common/Util', '../common/Twe
 		},
 		//目标定位滚动
 		goalRun: function () {
-			this.goal.css('marginTop', Math.ceil(Tween.Back.easeOut(this.startTime, this.startVal, -1 * this.changeVal, this.duration)));
+			this.goal.css('marginTop', Math.ceil(Tween.Quad.easeOut(this.startTime, this.startVal, -1 * this.changeVal, this.duration)));
 
 			if (this.startTime < this.duration) {
 				this.startTime += this.step;
