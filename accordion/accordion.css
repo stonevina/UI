@@ -1,0 +1,5 @@
+.container{width: 900px;height: 300px;position: relative;overflow: hidden;border: 1px solid #aaa;margin: 10px auto;}
+.container .accordion-box{width: 100%;height: 300px;position: absolute;cursor: pointer;}
+.container .red{background: #FA4;}
+.container .green{background: #BD1;}
+.container .blue{background: #A9F;}

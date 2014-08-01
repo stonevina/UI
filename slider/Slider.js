@@ -4,7 +4,7 @@
  * @author: wolf
  * @time: 2014-04-28 10:17:13
  */
-define(['../common/Base', '../common/Util'], function(Class, Util) {
+define(['../common/Base', '../common/Util', '../common/Template'], function(Class, Util, Template) {
 	var Slider = new Class;
 
 	Slider.include({
@@ -12,6 +12,8 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 			var defaults = {
 				//触发事件
 				eventType: 'click',
+				//slider导航触发事件
+				navEventType: 'mouseover',
 				//动画速度
 				speed: 500,
 				//是否支持响应式
@@ -22,6 +24,8 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				visible: 2,
 				//单次滚动的数量
 				step: 5,
+				//是否包含导航
+				isHasNav: false,
 				//是否自动播放
 				isAutoPlay: false,
 				//自动播放延迟时间
@@ -36,14 +40,20 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 				sliderItemParentTag: 'ul',
 				//slider单个元素的tag
 				sliderItemTag: 'li',
+				//导航单个元素的tag
+				sliderNavTag: 'span',
 				//slider外部容器的选择器
 				slideWrapSelector: '.slider-wrap',
 				//slider内容wrap的选择器
 				slideCtnWrapSelector: '.slider-show',
+				//导航的选择器
+				sliderNavSelector: '.slider-nav',
 				//slider前一页的选择器
 				sliderPreSelector: '.prev',
 				//slider后一页的选择器
 				sliderNextSelector: '.next',
+				//导航当前选中的样式
+				sliderNavSelected: 'selected',
 				//slider单个元素的宽度
 				sliderItemWidth: '',
 				//slider单个元素的高度
@@ -64,10 +74,41 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 			this.bindEvent();
 
 			this.isAutoPlay && this.autoPlay();
+			this.isHasNav && this.createNav();
 		},
 		bindEvent: function () {
 			this.prevEle.click(this.proxy(this.prev));
 			this.nextEle.click(this.proxy(this.next));
+		},
+		createNav: function () {
+			var navtpl = '<div class="<%this.className%>">\
+							<%for(var i = 0; i < this.itemNum; i++) {%>\
+								<%if (i == 0) {%>\
+									<<%this.tag%> class="<%this.selected%>"><%i+1%></<%this.tag%>>\
+								<%} else {%>\
+									<<%this.tag%>><%i+1%></<%this.tag%>>\
+								<%}%>\
+							<%}%>\
+						</div>\
+						', that = this, timer;
+
+			this.slideWrapSelector.find(this.slideCtnWrapSelector).append(Template(navtpl, {itemNum: this.itemNum, className: this.sliderNavSelector.slice(1), tag: this.sliderNavTag, selected: this.sliderNavSelected}));
+
+			this.slideWrapSelector.delegate(that.sliderNavSelector + ' ' + that.sliderNavTag, this.navEventType, function () {
+				var _this = this;
+				var animateFunction = function () {
+					var nIndex = $(_this).index() + 1;
+
+					$(_this).addClass(that.sliderNavSelected).siblings().removeClass(that.sliderNavSelected);
+
+					that.targetItemWrap.animate({left: that.width * nIndex * -1}, that.speed, function () {
+						that.isAnimate = false;
+						that.callback.call(this, this);
+					});
+				};
+
+				Util.throttle(animateFunction, 500);
+			});	
 		},
 		initStyle: function () {
 			var itemNum = this.targetItem.size(),
@@ -146,6 +187,17 @@ define(['../common/Base', '../common/Util'], function(Class, Util) {
 
 				self.isAnimate = false;
 				self.callback.call(this, this);
+
+				//存在导航的情况，需处理下选中导航
+				if (self.isHasNav) {
+					var index = Math.abs(loc.distance / self.width) - 1;
+					//从前往后
+					index = index < self.itemNum ? index : 0;
+					//从后往前
+					index = index < 0 ? index + self.itemNum : index;
+					$(self.sliderNavSelector + ' ' + self.sliderNavTag).filter(':eq(' + index + ')').addClass(self.sliderNavSelected).siblings().removeClass(self.sliderNavSelected).end();
+				}
+
 			});
 		},
 		//自动播放

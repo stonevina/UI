@@ -2,16 +2,18 @@ define(['./Base'], function(Class) {
 	var Util = new Class;
 
 	Util.extend({
+		_timer: [],
 		//函数节流，主要用于低版本浏览器resize
 		throttle: function (fn, delay) {
-		    var timer = null;
-		    return function () {
-		        var context = this, args = arguments;
-		        clearTimeout(timer);
-		        timer = setTimeout(function () {
-		            fn.apply(context, args);
-		        }, delay);
-		    };
+			var timer;
+
+			for (var i = 0; i < this._timer.length; i++) {
+	        	clearTimeout(this._timer[i]);
+	        	this._timer = [];
+	        }
+
+	        timer = setTimeout(fn, delay);
+	        this._timer.push(timer);
 		},
 		//延迟执行
 		setTimer: function (isBreak, func) {
