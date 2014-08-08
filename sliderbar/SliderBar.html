@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="http://misc.360buyimg.com/lib/skin/2013/base.css" type="text/css" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="sliderbar.css">
+		<script type="text/javascript" src="http://misc.360buyimg.com/lib/js/e/jquery-1.6.4-min.js"></script>
+	</head>
+	<body>
+		<div class="fk-grid">
+			<!--水平滑块demo start-->
+			<div class="fk-h">语音通话量：</div>
+			<div class="fk-d pr" id="phoneTime">
+				<input type="text" class="box" value="20">分钟/月
+				<div class="progress_bar progress_barX clearfix">
+					<div class="pb_bar_l">
+						<div class="pb_bar_layout" id="phoneTimeBar">
+							<a href="#" class="minus"></a>
+							<a href="#" class="add"></a>
+							<div class="red_line">
+								<span class="dray_cur"></span>
+							</div>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy fy_last"></span>
+						</div>
+						<div class="pb_bar_txt clearfix">
+							<span class="fy">0</span>
+							<span class="fy">100</span>
+							<span class="fy">200</span>
+							<span class="fy">300</span>
+							<span class="fy">400</span>
+							<span class="fy">500</span>
+							<span class="fy">600</span>
+							<span class="fy">700</span>
+							<span class="fy">800</span>
+							<span class="fy">900</span>
+							<span class="fy">1000</span>
+						</div>
+					</div>
+					<div class="pb_txt" id="phoneTimeTxt">
+						<span>19分钟</span>
+						0.15元/分钟
+					</div>
+				</div>
+			</div>
+			<!--水平滑块demo end-->
+
+			<!--竖直滑块demo start-->
+			<div class="fk-h">网络流量：</div>
+			<div class="fk-d pr" id="network">
+				<input type="text" class="box" value="45">MB/月
+				<div class="progress_bar progress_barY clearfix">
+					<div class="pb_bar_l">
+						<div class="pb_bar_layout" id="networkBar">
+							<a href="#" class="minus"></a>
+							<a href="#" class="add"></a>
+							<div class="red_line">
+								<span class="dray_cur"></span>
+							</div>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy"></span>
+							<span class="fy fy_last"></span>
+						</div>
+						<div class="pb_bar_txt clearfix">
+							<span class="fy fy-y-first">0</span>
+							<span class="fy">100</span>
+							<span class="fy">200</span>
+							<span class="fy">300</span>
+							<span class="fy">400</span>
+							<span class="fy">500</span>
+							<span class="fy">600</span>
+							<span class="fy">700</span>
+							<span class="fy">800</span>
+							<span class="fy">900</span>
+							<span class="fy fy-y-last">1000</span>
+						</div>
+					</div>
+					<div class="pb_txt" id="networkTxt">
+						<span>45M</span>
+						0.0003元/KB
+					</div>
+				</div>
+			</div>
+			<!--竖直滑块demo end-->
+		</div>
+		<script type="text/javascript" src="../lib/require.js" data-main="app.js"></script>
+	</body>
+</html>

@@ -18,5 +18,5 @@ require(['./Slider', '../common/Template'], function(Slider, Template) {
 
 	var shopSlider01 = new Slider({speed: 400,step: 1,visible:1,slideWrapSelector: '#slider01', isAutoPlay: true, isLoop: true});
 	var shopSlider02 = new Slider({speed: 400,step: 1,visible:1,slideWrapSelector: '#slider02', isLoop: true, isHasNav: true});
-	var shopSlider03 = new Slider({speed: 400,step: 3,visible:3,slideWrapSelector: '#slider03', isLoop: true});
+	var shopSlider03 = new Slider({speed: 400,step: 2,visible:3,slideWrapSelector: '#slider03', isLoop: true, isAutoPlay: true});
 });
