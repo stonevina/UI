@@ -18,10 +18,6 @@ define(['../common/Base', '../common/Util', '../common/Template'], function(Clas
 				direction: 'x',
 				//当前值
 				currentValue: 0,
-				//最小值
-				minWidth: 0,
-				//最大值
-				maxWidth: 0,
 				//最小值（必须）
 				minValue: 0,
 				//最大值（必须）
