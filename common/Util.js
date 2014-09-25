@@ -111,7 +111,21 @@ define(['./Base'], function(Class) {
 		    }
 
 		    return isEventSupported;
-		})()
+		})(),
+		//补充文本，例如补零操作
+		paddingTxt: function (direction, origin, txt, num, isPadding) {
+			
+			if (!isPadding) {return origin;}
+		
+			var origin = typeof origin == 'string' ? origin : '' + origin;
+				
+			while(origin.length < num) {
+				//0是头部，1是尾部
+				origin = direction == 0 ? txt + origin : origin + txt;
+			}
+			
+			return origin;
+		}
 	});
 
 	return Util;

@@ -14,6 +14,10 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 				beginTime: '',
 				//结束时间
 				endTime: '',
+				//间隔精度
+				precision: 1000,
+				//是否保留两位
+				isTwoDigital: true,
 				//倒计时过程中的回调
 				onchange: $.noop,
 				//倒计时结束时的回调
@@ -22,7 +26,6 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 			settings = $.extend({}, defaults, opts);
 			$.extend(this, settings);
 			
-			this.precision = 1000;
 			this.beginTime = this.beginTime ? new Date(this.beginTime) : new Date();
 			
 			this.start();
@@ -33,12 +36,14 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 			this.endTime = new Date(this.endTime).getTime();
 			
 			var leaveTime = (this.endTime - this.beginTime) / 1000;
+			var milliPrecision = Math.min(this.precision * 10, 1000);
 			
 			this.leaveTimeObj = {
-				day: Math.floor(leaveTime / 24 / 60 / 60),
-				hour: Math.floor(leaveTime / (60 * 60)) % 24,
-				minute: Math.floor(leaveTime / 60) % 60,
-				second: leaveTime % 60
+				day: Util.paddingTxt(0, Math.floor(leaveTime / 24 / 60 / 60), 0, 2, this.isTwoDigital),
+				hour: Util.paddingTxt(0, Math.floor(leaveTime / (60 * 60)) % 24, 0, 2, this.isTwoDigital),
+				minute: Util.paddingTxt(0, Math.floor(leaveTime / 60) % 60, 0, 2, this.isTwoDigital),
+				second: Util.paddingTxt(0, Math.floor(leaveTime % 60), 0, 2, this.isTwoDigital),
+				millisecond:  Util.paddingTxt(0, Math.floor(leaveTime * milliPrecision % milliPrecision), 0, Math.log(1000) / Math.log(milliPrecision), this.isTwoDigital)
 			};
 			
 			this.onchange.call(this, this.leaveTimeObj);
