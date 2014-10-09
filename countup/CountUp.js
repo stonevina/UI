@@ -1,8 +1,8 @@
 /**
- * @description: 数字滚动
+ * @description: 正计时
  * @version: 1.0.0
  * @author: wolf
- * @time: 2014-06-24 17:58:17
+ * @time: 2014-09-25 13:38:32
  */
 define(['../common/Base', '../common/Util'], function (Class, Util) {
 	var CountUp = new Class;
@@ -10,111 +10,50 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 	CountUp.include({
 		init: function (opts) {
 			var defaults = {
-				//目标元素
-				target: '',
-				//起始值
-				startVal: 0,
-				//最终值
-				endVal: 0,
-				//小数位数
-				decimals: 0,
-				//动画持续时间
-				duration: 2.5,
-				//分隔符
-				splitSign: '.',
-				//动画停止后的回调
-				complete: $.noop
+				//开始时间
+				beginTime: '',
+				//间隔精度
+				precision: 1000,
+				//是否保留两位
+				isTwoDigital: true,
+				//正计时过程中的回调
+				onchange: $.noop,
+				//正计时结束时的回调
+				onEnd: $.noop
 			},
 			settings = $.extend({}, defaults, opts);
 			$.extend(this, settings);
-
-			this.countDown = this.startVal > this.endVal ? true : false;
-			this.startTime = 0;
-			this.timeStam = 0;
-			this.remaining = 0;
-			this.frameVal = this.startVal;
-			this.rAF = 0;
-			this.decimals = Math.max(0, opts.decimals || 0);
-			this.dec = Math.pow(10, this.decimals);
-			this.duration = opts.duration * 1000 || 2000;
-			this.originStartVal = this.startVal;
-			this.originDuration = this.duration;
-
-			this.initAnimationFrame();
-		},
-		initAnimationFrame: function () {
-			Util.initAnimationFrame();
-		},
-		easeOutExpo: function (t, b, c, d) {
-			return c * (-Math.pow(2, -10 * t / d) + 1) * 1024 / 1023 + b;
-		},
-		count: function (timestamp) {
-			if (this.startTime === null) this.startTime = timestamp;
-
-			this.timestamp = timestamp;
-
-			var progress = this.timestamp - this.startTime;
-			this.remaining = this.duration - progress;
 			
-			if (this.countDown) {
-				var i = (this.startVal - this.endVal) * (progress / this.duration);
-				this.frameVal = this.startVal - i;
-			} else {
-				this.frameVal = this.startVal + (this.endVal - this.startVal) * (progress / this.duration);
-			}
+			this.beginTime = (this.beginTime ? new Date(this.beginTime) : new Date()).getTime();
+			this.currentTime = this.beginTime;
 			
-			this.frameVal = Math.round(this.frameVal*this.dec) / this.dec;
-			
-			if (this.countDown) {
-                var i = this.easeOutExpo(progress, 0, this.startVal - this.endVal, this.duration);
-                this.frameVal = this.startVal - i;
-            } else {
-                this.frameVal = this.easeOutExpo(progress, this.startVal, this.endVal - this.startVal, this.duration);
-            }
-			
-			this.target.get(0).innerHTML = this.formatNumber(this.frameVal.toFixed(this.decimals));
-				   
-			if (progress < this.duration) {
-				this.rAF = requestAnimationFrame($.proxy(this.count, this));
-			} else {
-				if (this.complete != null) this.complete();
-				this.reset();
-			}
+			this.start();
 		},
+		//获取持续时间
+		getLastTime: function () {
+			this.currentTime += this.precision;
+			var lastTime = (this.currentTime - this.beginTime) / 1000;
+			var milliPrecision = Math.min(this.precision * 10, 1000);
+			
+			this.lastTimeObj = {
+				day: Util.paddingTxt(0, Math.floor(lastTime / 24 / 60 / 60), 0, 2, this.isTwoDigital),
+				hour: Util.paddingTxt(0, Math.floor(lastTime / (60 * 60)) % 24, 0, 2, this.isTwoDigital),
+				minute: Util.paddingTxt(0, Math.floor(lastTime / 60) % 60, 0, 2, this.isTwoDigital),
+				second: Util.paddingTxt(0, Math.floor(lastTime % 60), 0, 2, this.isTwoDigital),
+				millisecond:  Util.paddingTxt(0, Math.floor(lastTime * milliPrecision % milliPrecision), 0, Math.log(1000) / Math.log(milliPrecision), this.isTwoDigital)
+			};
+			
+			this.onchange.call(this, this.lastTimeObj);
+			lastTime == 0 && this.stop.call(this);
+		},
+		//当小于1s的时候，chrome浏览器会做优化，当前的标签隐藏时，js将停止执行
 		start: function () {
-			this.reset();
-			if (!isNaN(this.endVal) && !isNaN(this.startVal)) {
-				this.rAF = requestAnimationFrame($.proxy(this.count, this));
-			} else {
-				console.log('countUp error: startVal or endVal is not a number');
-				this.d.innerHTML = '--';
-			}
-			
-			return false;
+			this.timer = setInterval($.proxy(this.getLastTime, this), this.precision);
 		},
 		stop: function () {
-			cancelAnimationFrame(this.rAF);
-		},
-		resume: function () {
-			this.startTime = null;
-			this.duration = this.remaining;
-			this.startVal = this.frameVal;
-			this.rAF = requestAnimationFrame($.proxy(this.count, this));
-		},
-		reset: function () {
-			this.startTime = null;
-			this.startVal = this.originStartVal;
-			this.duration = this.originDuration;
-			cancelAnimationFrame(this.rAF);
-			this.target.get(0).innerHTML = this.formatNumber(this.startVal.toFixed(this.decimals));
-		},
-		formatNumber: function (nStr) {
-			var x, x1, x2;
-			nStr += '';
-			x = nStr.split('.');
-			x1 = x[0];
-			x2 = x.length > 1 ? this.splitSign + x[1] : '';
-			return x1 + x2;
+			clearInterval(this.timer);
+			this.timer = null;
+			this.onEnd.call(this);
 		}
 	});
 

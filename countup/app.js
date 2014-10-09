@@ -1,15 +1,15 @@
 require(['./CountUp'], function(CountUp) {
 	var countup = new CountUp({
-		target: $('#myTargetElement'),
-		startVal: 24.02,
-		endVal: 94.62,
-		decimals: 2,
-		duration: 2.5,
-		complete: function() {console.info('ok')}
+		precision: 1000,
+		onchange: function (time) {
+			var tpl = '{day}天{hour}小时{minute}分钟{second}秒{millisecond}毫秒';
+			var time = tpl.replace(/{day}/g, time.day)
+					.replace(/{hour}/g, time.hour)
+					.replace(/{minute}/g, time.minute)
+					.replace(/{second}/g, time.second)
+					.replace(/{millisecond}/g, time.millisecond);
+				
+			$('.time').html(time);
+		}
 	});
-
-	$('#start').click($.proxy(countup.start, countup));
-	$('#stop').click($.proxy(countup.stop, countup));
-	$('#resume').click($.proxy(countup.resume, countup));
-	$('#reset').click($.proxy(countup.reset, countup));
 });
