@@ -1,6 +1,7 @@
 require(['./CountUp'], function(CountUp) {
 	var countup = new CountUp({
-		precision: 1000,
+		precision: 10,
+		//duration: 10,
 		onchange: function (time) {
 			var tpl = '{day}天{hour}小时{minute}分钟{second}秒{millisecond}毫秒';
 			var time = tpl.replace(/{day}/g, time.day)
