@@ -5,7 +5,7 @@
  * @time: 2014-05-30 10:50:21
  * @update: 2014-12-03 15:24:32
  */
-define(['../common/Base', '../common/Template', '../common/Util'], function (Class, Template, Util) {
+define(['../common/Base'], function (Class) {
 	var Scrollbar = new Class;
 
 	Scrollbar.include({
