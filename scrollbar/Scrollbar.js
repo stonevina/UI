@@ -1,8 +1,9 @@
 /**
  * @description: 滚动条
- * @version: 1.0.0
+ * @version: 1.1.0
  * @author: wolf
  * @time: 2014-05-30 10:50:21
+ * @update: 2014-12-03 15:24:32
  */
 define(['../common/Base', '../common/Template', '../common/Util'], function (Class, Template, Util) {
 	var Scrollbar = new Class;
@@ -16,32 +17,24 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 				isHaveHead: false,
 				//滚动单次移动距离
 				step: 15,
-				//横向滚动条样式
-				hscrollbarClass: 'ui-hscrollbar-item',
-				//纵向滚动条样式
-				vscrollbarClass: 'ui-vscrollbar-item',
-				//横向滚动条头部样式
-				hscrollbarHeadClass: 'ui-hscrollbar-head',
-				//纵向滚动条头部样式
-				vscrollbarHeadClass: 'ui-vscrollbar-head',
-				//横向滚动条尾部样式
-				hscrollbarNailClass: 'ui-hscrollbar-nail',
-				//纵向滚动条尾部样式
-				vscrollbarNailClass: 'ui-vscrollbar-nail',
-				//横向滚动条外层样式
-				hscrollbarWrapClass: 'ui-hscrollbar-wrap',
-				//纵向滚动条外层样式
-				vscrollbarWrapClass: 'ui-vscrollbar-wrap',
-				//内容区域选择器
-				wrapSelector: '',
-				//内容区域样式
-				wrapClass: 'ui-scrollbox',
-				//横向滚动条内容区域样式
-				hscrollbarContentClass: 'ui-hscrollContent',
-				//纵向滚动条内容区域样式
-				vscrollbarContentClass: 'ui-vscrollContent',
+				//滚动条滑块样式
+				scrollbarBodyClass: 'ui-scroll-body',
+				//滚动条头部样式
+				scrollHeadClass: 'ui-scroll-head',
+				//滚动条尾部样式
+				scrollNailClass: 'ui-scroll-nail',
+				//滚动条样式
+				scrollbarClass: 'ui-scroll',
+				//包含滚动条以及滚动条控制区域的直接父级元素
+				controledParentEle: '',
+				//滚动条控制区域元素
+				controledEle: '',
 				//头尾图片的宽、高，用作偏移量
-				scrollbarOffset: 15
+				scrollbarOffset: 15,
+				//滚动条默认层级
+				scrollzIndex: 1,
+				//是否开启自适应模式
+				isResize: true
 			},
 			settings = $.extend({}, defaults, opts);
 			$.extend(this, settings);
@@ -49,70 +42,69 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 			this.create();
 		},
 		create: function () {
-			var contentClass = this.vscrollbarContentClass,
-				wrapScrollbarClass = this.vscrollbarWrapClass,
-				scrollbarClass = this.vscrollbarClass,
-				scrollbarHeadClass = this.vscrollbarHeadClass,
-				scrollbarNailClass = this.vscrollbarNailClass;
+			var hScrollStyle = {position: 'absolute', left: 0, bottom: 0, scrollzIndex: this.scrollzIndex};
+			var vScrollStyle = {position: 'absolute', right: 0, top: 0, scrollzIndex: this.scrollzIndex};
+		
+			this.container = $(this.controledParentEle).css({position: 'relative', overflow: 'hidden'});
+			this.controledEle = $(this.controledEle).css({position: 'relative'});
+			this.containerHeight = this.container.outerHeight(true);
+			this.controledHeight = this.controledEle.outerHeight(true) + parseInt(this.container.css('paddingTop'), 10) + parseInt(this.container.css('paddingBottom'), 10);
+			this.containerWidth = this.container.outerWidth(true);
+			//这里需要使用scrollWidth，其他方式width() outerWidth()，均偏小
+			this.controledWidth = this.controledEle.get(0).scrollWidth + parseInt(this.container.css('paddingLeft'), 10) + parseInt(this.container.css('paddingRight'), 10);
+			
+			//创建滚动条对象
+			this.scrollbar = $('<div class=' + this.scrollbarClass + '>');
+			this.scrollbarBody = $('<div class=' + this.scrollbarBodyClass + '>').css({position: 'absolute', scrollzIndex: this.scrollzIndex + 1});
+			this.scrollbarHead = $('<div class=' + this.scrollHeadClass + '>').css({position: 'absolute', scrollzIndex: this.scrollzIndex + 1});
+			this.scrollbarNail = $('<div class=' + this.scrollNailClass + '>').css({position: 'absolute', scrollzIndex: this.scrollzIndex + 1});
+			
+			this.scrollbar.append(this.scrollbarHead);
+			this.scrollbar.append(this.scrollbarNail);
+			this.scrollbar.append(this.scrollbarBody);
+			this.container.append(this.scrollbar);
 
-			//判断方向
-			if (!this.isVertical) {
-				contentClass = this.hscrollbarContentClass;
-				wrapScrollbarClass = this.hscrollbarWrapClass;
-				scrollbarClass = this.hscrollbarClass;
-				scrollbarHeadClass = this.hscrollbarHeadClass;
-				scrollbarNailClass = this.hscrollbarNailClass;
+			//绑定事件
+			this.scrollbarBody.bind('mousedown', this.proxy(this.mousedown, this));
+			this.scrollbarBody.bind('click', this.preventDefaultAndPropagation);
+			this.scrollbar.bind('click', this.proxy(this.clickBar, this));
+			this.container.get(0).onmousewheel = this.proxy(this.mouseWheel, this);
+			//for firfox
+			this.container.get(0).addEventListener && this.container.get(0).addEventListener('DOMMouseScroll', this.proxy(this.mouseWheel, this));
+			
+			
+			if (this.isVertical) {
+				this.scrollbar.css(vScrollStyle);
+				this.scrollbarNail.css('bottom', 0);
+			} else {
+				this.scrollbar.css(hScrollStyle);
+				this.scrollbarNail.css('right', 0);
 			}
 			
-			this.wrap = $(this.wrapSelector).addClass(this.wrapClass).get(0);
-			this.content = $('.' + contentClass, this.wrapSelector).get(0);
-
-			this.wrapScrollbar = document.createElement('div');
-			this.scrollbar = document.createElement('div');
-			this.scrollbarHead = document.createElement('div');
-			this.scrollbarNail = document.createElement('div');
-
 			this.setEleSize();
-
-			this.wrapScrollbar.className = wrapScrollbarClass;
-			this.scrollbar.className = scrollbarClass;
-
-			this.scrollbarHead.className = scrollbarHeadClass;
-			this.scrollbarNail.className = scrollbarNailClass;
-
-			this.wrapScrollbar.appendChild(this.scrollbarHead);
-			this.wrapScrollbar.appendChild(this.scrollbarNail);
-			this.wrapScrollbar.appendChild(this.scrollbar);
-			this.wrap.appendChild(this.wrapScrollbar);
-
-			//判断方向
-			this.isVertical ? 
-				this.content.style.width = (this.wrap.clientWidth - this.wrapScrollbar.offsetWidth) + 'px' : 
-				this.content.style.height = (this.wrap.clientHeight - this.wrapScrollbar.offsetHeight) + 'px';
-
-			this.scrollbar.onmousedown = this.proxy(this.mousedown, this);
-			this.scrollbar.onclick = this.preventDefaultAndPropagation;
-			this.wrapScrollbar.onclick = this.proxy(this.clickBar, this);
-			this.wrap.onmousewheel = this.proxy(this.mouseWheel, this);
-			//for firfox
-			this.wrap.addEventListener && this.wrap.addEventListener('DOMMouseScroll', this.proxy(this.mouseWheel, this));
 		},
 		setEleSize: function () {
 			//判断方向
 			if (this.isVertical) {
-				this.wrapScrollbar.style.height = this.wrap.offsetHeight + 'px';
-				this.content.style.height = this.wrap.offsetHeight + 'px';
-				this.content.scrollTop = 0;
+				this.scrollbar.height(this.containerHeight);
+				this.controledEle.css('top', 0);
 			
-				this.scrollbar.style.marginTop = this.scrollbarOffset + 'px';
-				this.scrollbar.style.height = parseInt(this.wrap.offsetHeight / this.content.scrollHeight * (this.wrap.offsetHeight - this.scrollbarOffset * 2), 10) + 'px';
-			} else {
-				this.wrapScrollbar.style.width = this.wrap.offsetWidth + 'px';
-				this.content.style.width = this.wrap.offsetWidth + 'px';
-				this.content.scrollLeft = 0;
-
-				this.scrollbar.style.marginLeft = this.scrollbarOffset + 'px';
-				this.scrollbar.style.width = parseInt(this.wrap.offsetWidth / this.content.scrollWidth * (this.wrap.offsetWidth - this.scrollbarOffset * 2), 10) + 'px';
+				var scrollbarBodyHeight = this.containerHeight / this.controledHeight * (this.containerHeight - this.scrollbarOffset * 2);
+				this.scrollbarBodyHeight = scrollbarBodyHeight;
+				this.scrollbarBody.css('marginTop', this.scrollbarOffset);
+				this.scrollbarBody.height(scrollbarBodyHeight);
+				this.controledEle.width(this.containerWidth);
+				this.container.width(this.containerWidth + this.scrollbarOffset);
+			} else {				
+				this.scrollbar.width(this.containerWidth);
+				this.controledEle.css('left', 0);
+			
+				var scrollbarBodyWidth = this.containerWidth / this.controledWidth * (this.containerWidth - this.scrollbarOffset * 2);
+				this.scrollbarBodyWidth = scrollbarBodyWidth;
+				this.scrollbarBody.css('marginLeft', this.scrollbarOffset);
+				this.scrollbarBody.width(scrollbarBodyWidth);
+				this.controledEle.height(this.containerHeight);
+				this.container.height(this.containerHeight + this.scrollbarOffset);
 			}
 		},
 		update: function () {
@@ -121,13 +113,13 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 		mousedown: function (e) {
 			var e = e || window.event;
 
-			this.scrollbar.y = e.clientY;
-			this.scrollbar.oft = parseInt(this.scrollbar.style.marginTop, 10);
+			this.scrollbarBody.y = e.clientY;
+			this.scrollbarBody.oft = parseInt($(this.scrollbarBody).css('marginTop'), 10);
 
 			//判断方向
 			if (!this.isVertical) {
-				this.scrollbar.x = e.clientX;
-				this.scrollbar.oft = parseInt(this.scrollbar.style.marginLeft, 10);
+				this.scrollbarBody.x = e.clientX;
+				this.scrollbarBody.oft = parseInt($(this.scrollbarBody).css('marginLeft'), 10);
 			}
 
 			document.onmousemove = this.proxy(this.mousemove, this);
@@ -138,8 +130,8 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 
 			//判断方向
 			this.isVertical ? 
-				(this.marginTop = this.scrollbar.oft + e.clientY - this.scrollbar.y) : 
-				(this.marginLeft = this.scrollbar.oft + e.clientX - this.scrollbar.x);
+				(this.marginTop = this.scrollbarBody.oft + e.clientY - this.scrollbarBody.y) : 
+				(this.marginLeft = this.scrollbarBody.oft + e.clientX - this.scrollbarBody.x);
 
 			this.changeLoc();
 
@@ -152,34 +144,39 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 				this.marginLeft = this.scrollbarOffset;
 			}
 
-			if (this.marginLeft > this.wrap.offsetWidth - this.scrollbar.offsetWidth - this.scrollbarOffset) {
-				this.marginLeft = this.wrap.offsetWidth - this.scrollbar.offsetWidth - this.scrollbarOffset;
+			if (this.marginLeft > this.containerWidth - this.scrollbarBodyWidth - this.scrollbarOffset) {
+				this.marginLeft = this.containerWidth - this.scrollbarBodyWidth - this.scrollbarOffset;
 			}
 
 			if (this.marginTop < this.scrollbarOffset) {
 				this.marginTop = this.scrollbarOffset;
 			}
 
-			if (this.marginTop > this.wrap.offsetHeight - this.scrollbar.offsetHeight - this.scrollbarOffset) {
-				this.marginTop = this.wrap.offsetHeight - this.scrollbar.offsetHeight - this.scrollbarOffset;
+			if (this.marginTop > this.containerHeight - this.scrollbarBodyHeight - this.scrollbarOffset) {
+				this.marginTop = this.containerHeight - this.scrollbarBodyHeight - this.scrollbarOffset;
 			}
+			
+			if (this.isVertical) {
+				var topValue = -1 * (this.controledHeight - this.containerHeight) * (this.marginTop - this.scrollbarOffset) / (this.containerHeight - this.scrollbarBodyHeight - this.scrollbarOffset * 2)
+				this.scrollbarBody.css('marginTop', this.marginTop);
+				this.controledEle.css('top', topValue);
+				return;
+			} 
 
-			this.scrollbar.style.marginTop = this.marginTop + 'px';
-			this.content.scrollTop = (this.content.scrollHeight - this.wrap.offsetHeight) * (this.marginTop - this.scrollbarOffset) / (this.wrap.clientHeight - this.scrollbar.clientHeight - this.scrollbarOffset * 2);
-		
-			this.scrollbar.style.marginLeft = this.marginLeft + 'px';
-			this.content.scrollLeft = (this.content.scrollWidth - this.wrap.offsetWidth) * (this.marginLeft - this.scrollbarOffset) / (this.wrap.clientWidth - this.scrollbar.clientWidth - this.scrollbarOffset * 2);
+			var leftValue = -1 * (this.controledWidth - this.containerWidth) * (this.marginLeft - this.scrollbarOffset) / (this.containerWidth - this.scrollbarBodyWidth - this.scrollbarOffset * 2)
+			this.scrollbarBody.css('marginLeft', this.marginLeft);
+			this.controledEle.css('left', leftValue);
 		},
 		mouseWheel: function (e) {
 			var e = e || window.event;
 			var delta = e.wheelDelta || e.detail;
 
 			if (delta == 3 || delta == -120) {
-				this.marginLeft = parseInt(this.scrollbar.style.marginLeft, 10) + this.step;
-				this.marginTop = parseInt(this.scrollbar.style.marginTop, 10) + this.step;
+				this.marginLeft = parseInt(this.scrollbarBody.css('marginLeft'), 10) + this.step;
+				this.marginTop = parseInt(this.scrollbarBody.css('marginTop'), 10) + this.step;
 			} else {
-				this.marginLeft = parseInt(this.scrollbar.style.marginLeft, 10) - this.step;
-				this.marginTop = parseInt(this.scrollbar.style.marginTop, 10) - this.step;
+				this.marginLeft = parseInt(this.scrollbarBody.css('marginLeft'), 10) - this.step;
+				this.marginTop = parseInt(this.scrollbarBody.css('marginTop'), 10) - this.step;
 			}
 
 			this.changeLoc();
@@ -189,23 +186,21 @@ define(['../common/Base', '../common/Template', '../common/Util'], function (Cla
 			var e = e || window.event;
 			var cx = e.clientX;
 			var cy = e.clientY;
-			var ofx = $(this.wrapScrollbar).offset().left;
-			var ofy = $(this.wrapScrollbar).offset().top;
-			var marginLeft = parseInt(this.scrollbar.style.marginLeft, 10);
-			var marginTop = parseInt(this.scrollbar.style.marginTop, 10);
-			var scrollbarWidth = parseInt(this.scrollbar.style.width, 10);
-			var scrollbarHeight = parseInt(this.scrollbar.style.height, 10);
+			var ofx = this.scrollbar.offset().left;
+			var ofy = this.scrollbar.offset().top;
+			var marginLeft = parseInt(this.scrollbarBody.css('marginLeft'), 10);
+			var marginTop = parseInt(this.scrollbarBody.css('marginTop'), 10);
 
-			if (cx - ofx > marginLeft + scrollbarWidth) {
-				this.marginLeft = parseInt(this.scrollbar.style.marginLeft, 10) + this.step;
+			if (cx - ofx > marginLeft + this.scrollbarBodyWidth) {
+				this.marginLeft = marginLeft + this.step;
 			} else {
-				this.marginLeft = parseInt(this.scrollbar.style.marginLeft, 10) - this.step;
+				this.marginLeft = marginLeft - this.step;
 			}
 
-			if (cy - ofy > marginTop + scrollbarHeight) {
-				this.marginTop = parseInt(this.scrollbar.style.marginTop, 10) + this.step;
+			if (cy - ofy > marginTop + this.scrollbarBodyHeight) {
+				this.marginTop = marginTop + this.step;
 			} else {
-				this.marginTop = parseInt(this.scrollbar.style.marginTop, 10) - this.step;
+				this.marginTop = marginTop - this.step;
 			}
 
 			this.changeLoc();

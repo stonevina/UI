@@ -1,4 +1,4 @@
 require(['./Scrollbar'], function(Scrollbar) {
-	 var scrollbarHead = new Scrollbar({wrapSelector: '#vscrollbar'});
-	 var hscrollbarHead = new Scrollbar({wrapSelector: '#hscrollbar', isVertical: false});
+	 var scrollbarHead = new Scrollbar({controledParentEle: '#vscrollbar', controledEle: '.ui-vscrollContent'});
+	 var hscrollbarHead = new Scrollbar({controledParentEle: '#hscrollbar', controledEle: '.ui-hscrollContent', isVertical: false});
 });
