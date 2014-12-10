@@ -1,5 +1,5 @@
 body{margin:30px auto;width: 300px;}
-.ui-scrollbox{width: 300px;height: 200px;overflow: hidden;border: 1px solid #eee;padding: 22px 10px 0 10px;}
+.ui-scrollbox{width: 300px;height: 200px;overflow: hidden;border: 1px solid #eee;padding: 22px 20px 0 10px;}
 .ui-hscrollContent{white-space: nowrap;}
 
 #vscrollbar .ui-scroll,

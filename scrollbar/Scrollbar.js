@@ -5,7 +5,7 @@
  * @time: 2014-05-30 10:50:21
  * @update: 2014-12-03 15:24:32
  */
-define(['../common/Base'], function (Class) {
+define(['../common/Base', '../common/Util'], function (Class, Util) {
 	var Scrollbar = new Class;
 
 	Scrollbar.include({
@@ -93,8 +93,6 @@ define(['../common/Base'], function (Class) {
 				this.scrollbarBodyHeight = scrollbarBodyHeight;
 				this.scrollbarBody.css('marginTop', this.scrollbarOffset);
 				this.scrollbarBody.height(scrollbarBodyHeight);
-				this.controledEle.width(this.containerWidth);
-				this.container.width(this.containerWidth + this.scrollbarOffset);
 			} else {				
 				this.scrollbar.width(this.containerWidth);
 				this.controledEle.css('left', 0);
@@ -103,8 +101,6 @@ define(['../common/Base'], function (Class) {
 				this.scrollbarBodyWidth = scrollbarBodyWidth;
 				this.scrollbarBody.css('marginLeft', this.scrollbarOffset);
 				this.scrollbarBody.width(scrollbarBodyWidth);
-				this.controledEle.height(this.containerHeight);
-				this.container.height(this.containerHeight + this.scrollbarOffset);
 			}
 		},
 		update: function () {
