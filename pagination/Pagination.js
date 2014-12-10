@@ -99,8 +99,14 @@ define(function (require, exports, module) {
 				pageArr.push('<em>' + this.ellipsis + '</em>');
 				startValue = Math.min(startValue, this.pageCount - this.showCount);
 			} else {
+				
+				if (this.currentPage == 1) {
+					pageArr.push('<a href=' + this.pageLink + ' class=' + this.selectedClass + '>1</a>');
+				} else {
+					pageArr.push('<a href=' + this.pageLink + '>1</a>');
+				}
+				
 				startValue = 2;
-				pageArr.push('<a href=' + this.pageLink + '>1</a>');
 			}
 			
 			for (var i = startValue; i <= this.pageCount; i++) {
