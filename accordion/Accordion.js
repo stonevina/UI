@@ -3,6 +3,7 @@
  * @version: 1.0.0
  * @author: wolf
  * @time: 2014-08-01 14:25:23
+ * @update: 2014-12-12 16:54:24
  */
 define(['../common/Base', '../common/Util'], function (Class, Util) {
 	var Accordion = new Class;
@@ -16,63 +17,59 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 				target: '.container',
 				//手风琴单个元素
 				accordionItem: '.accordion-box',
-				//展开的宽度
-				unfoldWidth: 500,
 				//移动方向
 				direction: 'x',
 				//默认选中项
-				index: 0,
+				selectedIndex: 0,
 				//选中项的class
 				activeClass: 'active',
+				//最小宽度
+				minWidth: 100,
+				//最大宽度
+				maxWidth: 700,
+				//最小宽度
+				minHeight: 100,
+				//最大宽度
+				maxHeight: 100,
 				//动画移动速度
 				speed: 500,
+				//延迟时间
+				delayTime: 50,
 				//动画停止后的回调
 				complete: $.noop
 			},
 			settings = $.extend({}, defaults, opts);
-			$.extend(this, settings);
+			$.extend(this, settings);			
 
 			this.create();
 		},
 		create: function () {
-			var that = this, 
-				cWidth = parseInt($(this.target).width(), 10), 
-				size = $(this.accordionItem, this.target).size() - 1,
-				offset = (cWidth - that.unfoldWidth) / size;
-
-			this.offset = offset;
-			this.cWidth = cWidth;
-
-			//初始化left值
-			$(this.accordionItem, this.target).each(function (i) {
-				i == 0 ? $(this).css('left', 0) : $(this).css('left', that.unfoldWidth + (i - 1) * offset);
-			});
-
+			var self = this;
+		
+			if (this.direction == 'x') {
+				this.minHeight = this.maxHeight = $(this.target).height();
+				$(this.accordionItem, this.target).css({float: 'left', width: this.minWidth, height: this.maxHeight});
+				$(this.accordionItem + ':eq(' + this.selectedIndex + ')', this.target).css({width: this.maxWidth});
+			} else {
+				this.minWidth = this.maxWidth = $(this.target).width();
+				$(this.accordionItem, this.target).css({height: this.minHeight, width: this.maxWidth});
+				$(this.accordionItem + ':eq(' + this.selectedIndex + ')', this.target).css({height: this.maxHeight});
+			}
+			
 			$(this.target).delegate(this.accordionItem, this.event, function () {
-				var _this = this, 
-					index = $(this).index(), 
-					selfLeft = parseInt($(this).css('left'), 10),
-					preLeft = parseInt($(this).prev().css('left'), 10),
-					nextLeft = parseInt($(this).next().css('left'), 10),
-					currentWidth = $(this).next().size() ? nextLeft - selfLeft : that.cWidth - selfLeft,
-					offset = that.unfoldWidth - currentWidth;
-				
-				var animateFunction = function () {
-					if (selfLeft - preLeft >= that.unfoldWidth) {
-						$(_this).animate({left: selfLeft - offset}, that.speed, 'linear', function () {
-							that.complete(_this);
-						});
-						$(_this).prev().animate({left: preLeft - offset}, that.speed, 'linear', function () {
-							that.complete(_this);
-						});
-					} else {
-						$(_this).next().animate({left: nextLeft + offset}, that.speed, 'linear', function () {
-							that.complete(_this);
-						});
-					}
-				};
-
-				Util.throttle(animateFunction, 500);
+			
+				var that = this;
+				clearTimeout(self.timer);
+				self.timer = setTimeout(function () {
+					$(that).siblings().removeClass(self.activeClass).animate({width: self.minWidth, height: self.minHeight}, self.speed, function () {
+					
+					});
+					
+					$(that).addClass(self.activeClass).animate({width: self.maxWidth, height: self.maxHeight}, self.speed, function () {
+						self.complete(that);
+					});
+				}, self.delayTime);
+			
 			});
 		}
 	});
