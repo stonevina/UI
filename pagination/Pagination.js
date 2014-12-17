@@ -4,6 +4,7 @@
  * @author: wolf
  * @time: 2014-12-10 10:54:21
  * @todo: 采用commonjs，兼容seajs
+ * @todp: 修改bug 2014.12.17 16:53:45
  */
 define(function (require, exports, module) {
 	var Class = require('../common/Base');
@@ -109,7 +110,7 @@ define(function (require, exports, module) {
 				startValue = 2;
 			}
 			
-			for (var i = startValue; i <= this.pageCount; i++) {
+			for (var i = startValue; i < this.pageCount; i++) {
 			
 				if (times++ == this.showCount) break;
 				
