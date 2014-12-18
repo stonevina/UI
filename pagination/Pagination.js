@@ -48,6 +48,8 @@ define(function (require, exports, module) {
 			settings = $.extend({}, defaults, opts);
 			$.extend(this, settings);
 			
+			if (this.total == 0) return;
+			
 			this.create();
 			this.bindEvent();
 			this.setPageBtn();
@@ -127,6 +129,9 @@ define(function (require, exports, module) {
 			if (this.pageCount - this.currentPage > middle + 1) {
 				pageArr.push('<em>' + this.ellipsis + '</em>');
 			}
+			
+			//处理只有一页的情况
+			if (this.pageCount < startValue) return pageArr.join('');
 			
 			if (this.currentPage == this.pageCount) {
 				pageArr.push('<a href=' + this.pageLink + ' class=' + this.selectedClass + '>' + i + '</a>');
