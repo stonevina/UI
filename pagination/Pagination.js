@@ -98,9 +98,14 @@ define(function (require, exports, module) {
 			
 			//是否从显示第一页及省略号
 			if (startValue > 2) {
-				pageArr.push('<a href=' + this.pageLink + '>1</a>');
-				pageArr.push('<em>' + this.ellipsis + '</em>');
-				startValue = Math.min(startValue, this.pageCount - this.showCount);
+			
+				startValue = Math.max(Math.min(startValue, this.pageCount - this.showCount), 1);
+				
+				if (startValue > 1) {
+					pageArr.push('<a href=' + this.pageLink + '>1</a>');
+					pageArr.push('<em>' + this.ellipsis + '</em>');
+				}
+				
 			} else {
 				
 				if (this.currentPage == 1) {
@@ -126,7 +131,7 @@ define(function (require, exports, module) {
 			}
 			
 			//是否显示省略号
-			if (this.pageCount - this.currentPage > middle + 1) {
+			if (this.pageCount - this.currentPage > middle + startValue) {
 				pageArr.push('<em>' + this.ellipsis + '</em>');
 			}
 			
