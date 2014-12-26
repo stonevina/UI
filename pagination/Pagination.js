@@ -40,6 +40,8 @@ define(function (require, exports, module) {
 				pageLink: 'javascript:;',
 				//显示页面省略
 				ellipsis: '...',
+				//是否隐藏只有一页的分页
+				isHideOnepage: false,
 				//是否显示跳转
 				isGoPage: false,
 				//点击页码回调
@@ -87,6 +89,9 @@ define(function (require, exports, module) {
 			pageArr.push(this.createPageBodyContent());
 			pageArr.push('<span class=' + this.nextClass + '>' + this.nextTxt + '</span>');
 			
+			//只有一页的数据，是否显示分页
+			if (this.pageCount == 1 && this.isHideOnepage) return;
+			
 			this.container.empty().append(pageArr.join(''));
 			
 			this.prevEle = this.container.find('.' + this.prevClass);
@@ -101,10 +106,8 @@ define(function (require, exports, module) {
 			
 				startValue = Math.max(Math.min(startValue, this.pageCount - this.showCount), 1);
 				
-				if (startValue > 1) {
-					pageArr.push('<a href=' + this.pageLink + '>1</a>');
-					pageArr.push('<em>' + this.ellipsis + '</em>');
-				}
+				if (startValue > 1) pageArr.push('<a href=' + this.pageLink + '>1</a>');
+				if (startValue > 2) pageArr.push('<em>' + this.ellipsis + '</em>');
 				
 			} else {
 				
@@ -131,7 +134,7 @@ define(function (require, exports, module) {
 			}
 			
 			//是否显示省略号
-			if (this.pageCount - this.currentPage > middle + startValue) {
+			if (this.pageCount > i) {
 				pageArr.push('<em>' + this.ellipsis + '</em>');
 			}
 			
