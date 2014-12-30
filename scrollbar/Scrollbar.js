@@ -3,7 +3,7 @@
  * @version: 1.1.0
  * @author: wolf
  * @time: 2014-05-30 10:50:21
- * @update: 2014-12-03 15:24:32
+ * @update: 2014-12-30 14:51:32
  */
 define(['../common/Base', '../common/Util'], function (Class, Util) {
 	var Scrollbar = new Class;
@@ -109,12 +109,12 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 		mousedown: function (e) {
 			var e = e || window.event;
 
-			this.scrollbarBody.y = e.clientY;
+			this.scrollbarBody.y = e.pageY;
 			this.scrollbarBody.oft = parseInt($(this.scrollbarBody).css('marginTop'), 10);
 
 			//判断方向
 			if (!this.isVertical) {
-				this.scrollbarBody.x = e.clientX;
+				this.scrollbarBody.x = e.pageX;
 				this.scrollbarBody.oft = parseInt($(this.scrollbarBody).css('marginLeft'), 10);
 			}
 
@@ -126,8 +126,8 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 
 			//判断方向
 			this.isVertical ? 
-				(this.marginTop = this.scrollbarBody.oft + e.clientY - this.scrollbarBody.y) : 
-				(this.marginLeft = this.scrollbarBody.oft + e.clientX - this.scrollbarBody.x);
+				(this.marginTop = this.scrollbarBody.oft + e.pageY - this.scrollbarBody.y) : 
+				(this.marginLeft = this.scrollbarBody.oft + e.pageX - this.scrollbarBody.x);
 
 			this.changeLoc();
 
@@ -180,8 +180,8 @@ define(['../common/Base', '../common/Util'], function (Class, Util) {
 		},
 		clickBar: function (e) {
 			var e = e || window.event;
-			var cx = e.clientX;
-			var cy = e.clientY;
+			var cx = e.pageX;
+			var cy = e.pageY;
 			var ofx = this.scrollbar.offset().left;
 			var ofy = this.scrollbar.offset().top;
 			var marginLeft = parseInt(this.scrollbarBody.css('marginLeft'), 10);
