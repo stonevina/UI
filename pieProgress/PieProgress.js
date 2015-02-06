@@ -147,7 +147,7 @@ define(function (require, exports, module) {
 					self.percent--;
 				}
 				
-				if (self.percent == goal || self.percent >= 100 || self.percent <= 0) {
+				if (self.percent == goal || self.percent >= 100 || self.percent <= 0 || Math.abs(self.percent - goal) < 1) {
 				
 					self.setPercentage(goal);
 					self.updateBar(goal, true);
@@ -276,6 +276,11 @@ define(function (require, exports, module) {
 			
 			this.updateBar();
 		}
+	};
+	
+	//canvas模块
+	CanvasModule = {
+		
 	};
 	
 	var checkSupportVml = function () {};

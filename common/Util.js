@@ -1,4 +1,5 @@
-define(['./Base'], function(Class) {
+define(function(require, exports, module) {
+	var Class = require('/common/Base.js');
 	var Util = new Class;
 
 	Util.extend({
