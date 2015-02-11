@@ -1,5 +1,5 @@
 /**
-*@description: SVG模块
+*@description: VML模块
 *@author: wolf
 *@time: 2015-02-09 15:29:08
 */
@@ -99,12 +99,12 @@ define(function (require, exports, module) {
 		},
 		init: function (opts) {
 		
-			this.opts = $.extend({}, defaults, opts);
+			this.opts = $.extend({}, opts);
 			
 			this.drawTrack();
 			this.drawBar();
 			
-			this.updateBar();
+			return this;
 		}
 	};
 })

@@ -5,7 +5,7 @@
 */
 define(function (require, exports, module) {
 
-	var Util = require('/common/Util.js');
+	var Util = require('../common/Util.js');
 	Util.initAnimationFrame();
 	
 	var SvgModule = require('module.svg.js');
@@ -14,6 +14,7 @@ define(function (require, exports, module) {
 	
 	return {
 		svg: SvgModule,
-		vml: VmlModule
+		vml: VmlModule,
+		canvas: CanvasModule
 	};
 });

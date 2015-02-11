@@ -6,19 +6,25 @@ require(['./PieProgress.js'], function (PieProgress) {
 		height: 160,
 		barcolor: 'green',
         barsize: '1',
-        trackcolor: '#f2f2f2',
+//      trackcolor: 'black',
+		trackcolor: '#f2f2f2',
         fillcolor: 'none',
 		containerElement: document.body,
 		//坐标值
-		x: 10,
-		y: 10
+		x: 20,
+		y: 20
 	};
 
 	if (PieProgress.svg.isSupport()) {
-		PieProgress.svg.init(defaults);
+		var svg = PieProgress.svg.init(defaults);
+		//svg.updateBar(89);
 	}
 	
 	if (PieProgress.vml.isSupport()) {
 		PieProgress.vml.init(defaults);
+	}
+	
+	if (PieProgress.canvas.isSupport()) {
+		PieProgress.canvas.init(defaults);
 	}
 });

@@ -22,8 +22,8 @@ define(function (require, exports, module) {
 		//返回公共配置
 		getParam: function () {
 			return {
-				cx: this.opts.width / 2 + this.opts.x,
-				cy: this.opts.height / 2 + this.opts.y,
+				cx: this.opts.width / 2,
+				cy: this.opts.height / 2,
                 rx: this.opts.width / 2 - this.opts.barsize / 2,
                 ry: this.opts.height / 2 - this.opts.barsize / 2,
 				barsize: this.opts.barsize
@@ -156,6 +156,8 @@ define(function (require, exports, module) {
 			this.drawTrack();
 			this.drawBar();
 			this.opts.containerElement.appendChild(this.svg);
+	
+			return this;		
 		}
 	};
 })
