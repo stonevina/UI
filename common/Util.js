@@ -126,7 +126,30 @@ define(function(require, exports, module) {
 			}
 			
 			return origin;
-		}
+		},
+		//序列化JSON数据
+		stringify: function (obj) {
+			var arr = [], that = this;
+			
+			$.each(obj, function(key, val) {
+				var next = '"' + key + '":';
+				
+				if($.isArray(obj)) {
+					next = '';
+				}
+				
+				next += $.isPlainObject(val) || $.isArray(val) ? that.stringify(val) : typeof val == 'number' ? val : '"' + val + '"';
+
+				arr.push(next);
+			});
+			
+			if($.isArray(obj)) {
+				return '[' + arr.join() + ']';
+			} else {
+				return "{" + arr.join() + "}";
+			}
+			
+		};
 	});
 
 	return Util;
