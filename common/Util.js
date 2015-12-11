@@ -149,7 +149,7 @@ define(function(require, exports, module) {
 				return "{" + arr.join() + "}";
 			}
 			
-		};
+		}
 	});
 
 	return Util;
